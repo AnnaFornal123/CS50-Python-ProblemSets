@@ -28,19 +28,31 @@ If the file's name ends with some other suffix or has no suffix at all, output a
 
 def main():
     file = get_file()
-    file_suffix = get_file_suffix()
-    media_type = assess_media_type(file_suffix)
+    file_suffix = get_file_suffix(file)
+    media_type = extract_media_type(file_suffix)
     print(f"Media type is: ", media_type)
 
 
 def get_file():
     while True:
-        try:
-            user_file = input("File name: ").strip().lower()
-            if user_file.index(".") > 0:
-                return user_file
-        except ValueError:
-            print("Enter a file name with extension ")
+        user_file = input("File name: ").strip().lower()
+        if is_file_name_valid(user_file):
+            return user_file
+
+
+def is_file_name_valid(file):
+    if len(file) <= 2:
+        print("Enter a correct file name with extension ")
+        return False
+    elif "." not in file:
+        return False
+    elif len(file.split(".")) > 2:
+        print("Enter a file with only 1 dot '.' ")
+        return False
+    elif len(file.split(".")[-1]) == 0:
+        return False
+    return True
+    
 
 
 def get_file_suffix(user_file):
@@ -48,8 +60,7 @@ def get_file_suffix(user_file):
     return user_file[dot_index:]
 
 
-
-def assess_media_type(suffix):
+def extract_media_type(suffix):
     match suffix:
         case ".gif" | ".jpg" | ".jpeg" | ".png":
             return "image/gif"
